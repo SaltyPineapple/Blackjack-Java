@@ -1,0 +1,179 @@
+public static void main(String[] args){
+        Scanner in = new Scanner(System.in);
+
+
+        boolean choice = true;
+        while(choice){
+
+            // Once the hand is over, run hand check, once hand is over, game method ends
+            game();
+
+            System.out.println("Would you like to play another hand? [y/n]");
+            String choose = in.nextLine();
+            if(choose.equals("n")){
+                choice = false;
+            }
+            else {
+                choice = true;
+            }
+
+        }
+    }
+
+
+    static int handValue(Card[] hand){
+
+        int total = 0;
+
+        for(int x=0; x< hand.length; x++){
+            if(hand[x] != null){
+                if(hand[x].rank() >= 10){
+                    total += 10;
+                }
+                else {
+                    total += hand[x].rank();
+                }
+            }
+        }
+
+        return total;
+    }
+
+    static void printHand(Card[] hand){
+        for(int x=0; x< hand.length; x++){
+            if(hand[x] != null){
+                System.out.println(hand[x]);
+            }
+        }
+
+    }
+
+    static void dealPrint(Card[] hand){
+        System.out.println(hand[1]);
+        System.out.print("*");
+    }
+
+    static String playerChoiceDouble(){
+        Scanner s = new Scanner(System.in);
+
+        System.out.println();
+        System.out.println("WHat do you choose?");
+        System.out.println("Hit:    [H]");
+        System.out.println("Stand:  [S]");
+        System.out.println("Double: [D]");
+
+        String answer = s.next();
+        return answer;
+
+    }
+
+    static String playerChoice(){
+        Scanner s = new Scanner(System.in);
+
+        System.out.println();
+        System.out.println("WHat do you choose?");
+        System.out.println("Hit:    [H]");
+        System.out.println("Stand:  [S]");
+
+        String answer = s.next();
+        return answer;
+    }
+
+    static void playerTurn(Card[] hand, Deck deck, int wager) {
+        boolean hit = false;
+        String turn;
+        if(!hit) {
+            turn = playerChoiceDouble();
+            hit = true;
+        }
+        else{
+            turn = playerChoice();
+        }
+        if(turn.equals("h")) {
+            for(int x=0; x< hand.length; x++){
+                if(hand[x] == null){
+                    hand[x] = deck.deal();
+                    printHand(hand);
+                    if(handValue(hand) < 21){
+                        playerTurn(hand, deck, wager);
+                    }
+                    else {
+                        break;
+                    }
+                }
+            }
+        }
+        else if(turn.equals("d")){
+            wager += wager;
+            System.out.println(wager);
+        }
+
+    }
+
+    static void dealerTurn(Card[] hand, Deck deck) {
+
+
+
+    }
+
+    static boolean handCheck(Card[] player, Card[] dealer, int wager){
+
+        System.out.println("Player Hand: ");
+        printHand(player);
+        System.out.println();
+        System.out.println("Dealer Hand: ");
+        printHand(dealer);
+
+        return true;
+    }
+
+
+
+
+    static void game(){
+        Scanner in = new Scanner(System.in);
+
+        Card[] player = new Card[10];
+        Card[] dealer = new Card[10];
+        Deck deck = new Deck();
+
+        int playerMoney = 40;
+
+        deck.shuffle(1000);
+
+        System.out.printf("Player Money: $%d\n", playerMoney);
+        System.out.println("What is your bet?");
+        int wager = in.nextInt();
+
+        // ERROR HANDLING WITH WAGER!!
+
+        player[1] = deck.deal();
+        player[2] = deck.deal();
+
+        dealer[1] = deck.deal();
+        dealer[2] = deck.deal();
+
+        System.out.println();
+
+        System.out.println("Dealer Hand: ");
+        dealPrint(dealer);
+
+        System.out.println();
+
+        System.out.println("Player Hand: ");
+        printHand(player);
+
+        playerTurn(player, deck, wager);
+
+
+        if(handCheck(player, dealer, wager)){
+            playerMoney += wager;
+        }
+        else{
+            playerMoney -= wager;
+        }
+
+
+
+
+    }
